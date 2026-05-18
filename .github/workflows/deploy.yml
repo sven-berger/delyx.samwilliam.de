@@ -1,34 +1,31 @@
-name: Deploy React App
+name: Remote Deploy on vServer
 
 on:
   push:
     branches:
-      - main  # Oder 'master', je nachdem wie dein Haupt-Branch heißt
+      - main  # Passe das an (main oder master), falls nötig
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - name: Executing remote SSH commands to deploy
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          node-version: 20
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            # 1. In das Projektverzeichnis auf dem Server wechseln
+            cd /var/projects/delyx.samwilliam.de
 
-      - name: Install Dependencies & Build
-        run: |
-          npm install
-          npm run build
+            # 2. Den neuesten Code direkt auf dem Server aus dem GitHub Repo pullen
+            git pull origin main
 
-      - name: Deploy to vServer via rsync
-        uses: AEnterprise/rsync-deploy@v1.0.2
-        env:
-          DEPLOY_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-avz --delete"
-          SERVER_PORT: "22"
-          FOLDER: "dist/"  # Der Ordner, den Vite generiert
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          USERNAME: ${{ secrets.SERVER_USER }}
-          SERVER_DESTINATION: "/var/projects/delyx.samwilliam.de/"
+            # 3. Die Abhängigkeiten installieren und das Projekt auf dem Server bauen
+            npm install
+            npm run build
+
+            # 4. (Optional) Rechte für den Webserver glattziehen
+            chown -R www-data:www-data /var/projects/delyx.samwilliam.de
