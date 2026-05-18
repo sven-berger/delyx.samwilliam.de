@@ -17,19 +17,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # 1. asdf für diese SSH-Sitzung aktivieren
-            export ASDF_DATA_DIR="$HOME/.asdf"
-            . "$HOME/.asdf/asdf.sh"
-
-            # 2. In den Ordner wechseln
+            # 1. In das Projektverzeichnis auf dem Server wechseln
             cd /var/projects/delyx.samwilliam.de
 
-            # 3. Code pullen
+            # 2. Den neuesten Code direkt auf dem Server aus dem GitHub Repo pullen
             git pull origin main
 
-            # 4. Mit dem asdf-NPM installieren und bauen
+            # 3. Die Abhängigkeiten installieren und das Projekt auf dem Server bauen
             npm install
             npm run build
 
-            # 5. Rechte setzen
+            # 4. (Optional) Rechte für den Webserver glattziehen
             chown -R www-data:www-data /var/projects/delyx.samwilliam.de
