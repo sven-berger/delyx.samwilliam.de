@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-    script: |
+        script: |
             # 1. asdf für diese SSH-Sitzung aktivieren
             export ASDF_DATA_DIR="$HOME/.asdf"
             . "$HOME/.asdf/asdf.sh"
