@@ -26,7 +26,7 @@ function App() {
           className="counter"
           onClick={() => setCount((count) => count + 1)}
         >
-          Zähler zum Testen is {count}
+          Der Zähler zum Testen is {count}
         </button>
       </section>
 
