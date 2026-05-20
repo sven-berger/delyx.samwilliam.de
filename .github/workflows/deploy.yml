@@ -17,15 +17,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            # 1. In das Projektverzeichnis auf dem Server wechseln
             cd /var/projects/delyx.samwilliam.de
-
-            # 2. Den neuesten Code direkt auf dem Server aus dem GitHub Repo pullen
             git pull origin main
-
-            # 3. Die Abhängigkeiten installieren und das Projekt auf dem Server bauen
             npm install
             npm run build
-
-            # 4. (Optional) Rechte für den Webserver glattziehen
             chown -R www-data:www-data /var/projects/delyx.samwilliam.de
